@@ -28,6 +28,7 @@
       <label>Password <input type="password" id="signUpPassword" required autocomplete="new-password" minlength="6"></label>
       <button type="submit">Sign up</button>
       <p id="signUpError" class="error hidden"></p>
+      <p id="signUpSuccess" class="hidden" style="margin-top: 0.5rem; color: #0a0; font-size: 0.9rem;">Check your email to verify your account. Then sign in below.</p>
     </form>
 
     <h2>Sign in</h2>
@@ -61,6 +62,7 @@
     const signInForm = document.getElementById('signInForm');
     const signUpError = document.getElementById('signUpError');
     const signInError = document.getElementById('signInError');
+    const signUpSuccess = document.getElementById('signUpSuccess');
 
     function showError(el, message) {
       el.textContent = message || '';
@@ -75,6 +77,7 @@
       loggedInView.classList.toggle('hidden', !loggedIn);
       showError(signUpError, '');
       showError(signInError, '');
+      if (signUpSuccess) signUpSuccess.classList.add('hidden');
     }
 
     async function init() {
@@ -94,14 +97,18 @@
     signUpForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       showError(signUpError, '');
+      if (signUpSuccess) signUpSuccess.classList.add('hidden');
       const email = document.getElementById('signUpEmail').value.trim();
       const password = document.getElementById('signUpPassword').value;
-      const { error } = await supabaseClient.auth.signUp({ email, password });
+      const { data, error } = await supabaseClient.auth.signUp({ email, password });
       if (error) {
         showError(signUpError, error.message);
         return;
       }
       showError(signUpError, '');
+      if (data.user && !data.session && signUpSuccess) {
+        signUpSuccess.classList.remove('hidden');
+      }
     });
 
     signInForm.addEventListener('submit', async (e) => {

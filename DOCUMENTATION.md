@@ -38,6 +38,17 @@
   2. **Settings** → **Pages** → **Source**: Deploy from branch → Branch: `main` → Folder: `/ (root)` → Save.
   3. The site will be available at `https://<username>.github.io/LoginTest/` (or your repo name).
 
+## Email confirmation link (GitHub Pages)
+
+If the app is deployed at a path (e.g. `https://linodinosaur.github.io/LoginTest/`), the **verification email link** must point to that full URL, not to the root `https://linodinosaur.github.io`. Otherwise the link in the email will open the wrong page and auth may fail.
+
+In Supabase **Authentication** → **URL Configuration**:
+
+- **Site URL:** Set to the full app URL **including the repo path**, e.g. `https://linodinosaur.github.io/LoginTest/` (trailing slash optional). Do **not** use `https://linodinosaur.github.io` if the app lives at `/LoginTest/`.
+- **Redirect URLs:** Add the same URL, e.g. `https://linodinosaur.github.io/LoginTest/**`, so Supabase allows redirects back to your app.
+
+After saving, new confirmation emails will use the correct link (e.g. `.../LoginTest/#access_token=...`).
+
 ## Google OAuth setup (optional)
 
 To use “Sign in with Google”:
@@ -52,7 +63,7 @@ To use “Sign in with Google”:
    - **Authentication** → **Providers** → **Google** → Enable, paste Client ID and Client Secret, Save.
 
 3. **Site URL**
-   - In Supabase **Authentication** → **URL Configuration**, set **Site URL** to your app’s origin (e.g. `https://linodinosaur.github.io` for GitHub Pages) so redirects after login go to the right place.
+   - In Supabase **Authentication** → **URL Configuration**, set **Site URL** to your app’s origin (e.g. `https://linodinosaur.github.io/LoginTest/` for this repo on GitHub Pages) so redirects after login go to the right place.
 
 ## Code conventions
 
@@ -65,6 +76,7 @@ To use “Sign in with Google”:
 
 ## Common pitfalls
 
+- **Verification email link goes to wrong page:** If the link in the email looks like `https://username.github.io/#access_token=...` instead of `https://username.github.io/LoginTest/#access_token=...`, set **Site URL** in Supabase to the full app URL including the path (see "Email confirmation link" above).
 - **Redirect after Google login:** If you get redirect loops or “site can’t be reached,” check Supabase **URL Configuration**: Site URL and Redirect URLs must match where the app is actually served (e.g. GitHub Pages URL).
 - **CORS:** Supabase allows browser origins by default; for custom domains, configure in Supabase if required.
 - **service_role key:** Do not use in frontend; it bypasses RLS and must stay server-side only.
