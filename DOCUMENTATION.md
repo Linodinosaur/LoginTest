@@ -47,7 +47,7 @@ In Supabase **Authentication** → **URL Configuration**:
 - **Site URL:** Set to the full app URL **including the repo path**, e.g. `https://linodinosaur.github.io/LoginTest/` (trailing slash optional). Do **not** use `https://linodinosaur.github.io` if the app lives at `/LoginTest/`.
 - **Redirect URLs:** Add the same URL, e.g. `https://linodinosaur.github.io/LoginTest/**`, so Supabase allows redirects back to your app.
 
-After saving, new confirmation emails will use the correct link (e.g. `.../LoginTest/#access_token=...`).
+After saving, new confirmation emails will use the correct link (e.g. `.../LoginTest/#access_token=...`). The app also passes `emailRedirectTo` on sign-up (the current page URL) so the confirmation email link targets the same origin; ensure that URL is in **Redirect URLs** (e.g. `https://linodinosaur.github.io/LoginTest/**`).
 
 ## Google OAuth setup (optional)
 

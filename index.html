@@ -100,7 +100,14 @@
       if (signUpSuccess) signUpSuccess.classList.add('hidden');
       const email = document.getElementById('signUpEmail').value.trim();
       const password = document.getElementById('signUpPassword').value;
-      const { data, error } = await supabaseClient.auth.signUp({ email, password });
+      // So the confirmation email link points here (fixes wrong link when Site URL in dashboard is ignored)
+      let redirectUrl = window.location.origin + (window.location.pathname || '/');
+      if (!redirectUrl.endsWith('/')) redirectUrl += '/';
+      const { data, error } = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: redirectUrl }
+      });
       if (error) {
         showError(signUpError, error.message);
         return;
